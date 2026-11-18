@@ -218,7 +218,9 @@
     }
   }
 
-  window.ZipManager = new ZipManager();
+  const instance = new ZipManager();
+  instance.downloadBlob = ZipManager.downloadBlob;
+  window.ZipManager = instance;
 
 })(window);
 

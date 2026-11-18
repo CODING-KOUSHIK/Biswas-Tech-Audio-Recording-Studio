@@ -2,543 +2,336 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Biswas Tech – Audio Recording Studio. Professional browser-based audio recording and data collection for AI speech training datasets.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Biswas Tech – Audio Recording Studio. Mobile-friendly voice data collection for AI speech training datasets.">
   <title>Biswas Tech – Audio Recording Studio</title>
   
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="manifest" href="./manifest.json">
   
-  <!-- Typography: Inter & Monospace -->
+  <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Main Stylesheet -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
   <!-- =========================================================================
-       TOP GLOBAL HEADER
+       SIMPLE TOP BAR
        ========================================================================= -->
-  <header class="app-header">
-    <div class="header-brand" id="header-brand-logo" title="Biswas Tech Home">
-      <img src="./assets/logo.svg" alt="Biswas Tech – Audio Recording Studio">
+  <header class="mobile-header">
+    <div class="header-left">
+      <img src="./assets/logo.svg" alt="Biswas Tech" class="mobile-logo" id="btn-header-home">
     </div>
-
-    <div class="header-status-area">
-      <!-- Active Phone Pill (Visible when user has entered number) -->
-      <div class="user-phone-pill" id="header-phone-pill" style="display: none;">
-        <span class="icon">📱</span>
-        <span id="header-phone-display">+91 0000000000</span>
+    
+    <div class="header-right">
+      <!-- Session Progress Counter (e.g. 1 / 12) -->
+      <div class="progress-pill" id="header-progress-pill" style="display: none;">
+        <span class="pill-dot"></span>
+        <span id="header-progress-text">1 / 1</span>
       </div>
 
-      <!-- Autosave State Indicator -->
-      <div class="autosave-badge" id="autosave-badge" title="All changes saved to IndexedDB">
-        <span class="autosave-icon">✓</span>
-        <span class="autosave-text" id="autosave-text">All progress saved</span>
+      <!-- Autosave indicator -->
+      <div class="autosave-dot" id="autosave-dot" title="All progress saved locally">
+        <span class="dot-icon">✓</span>
+        <span class="dot-text" id="autosave-text">Saved</span>
       </div>
-    </div>
 
-    <div class="header-actions">
-      <button class="btn-nav" id="btn-nav-dashboard" title="View all sessions and stats">
-        <span>📊</span> Dashboard
-      </button>
-      <button class="btn-primary-sm" id="btn-nav-new-script" title="Start a new recording session">
-        <span>+</span> New Scripts
-      </button>
-      <button class="btn-nav" id="btn-nav-settings" title="Settings & Storage">
-        <span>⚙️</span> Settings
+      <!-- Reset / New Session button -->
+      <button class="btn-icon-nav" id="btn-header-new" title="New Session" style="display: none;">
+        <span>+</span>
       </button>
     </div>
   </header>
 
-  <!-- =========================================================================
-       VIEW 1: USER ENTRY SCREEN (Welcome)
-       ========================================================================= -->
-  <main class="app-view active" id="view-entry">
-    <div class="entry-container">
-      <div class="entry-card">
-        <div class="entry-logo-wrap">
-          <img src="./assets/logo.svg" alt="Biswas Tech Logo">
-        </div>
-        
-        <p class="entry-tagline">Your Voice. Your Data. Your Contribution.</p>
-        <h1 class="entry-heading">Welcome to Biswas Tech</h1>
-        <p class="entry-subheading">Enter your WhatsApp number to continue your recording session.</p>
+  <!-- Main Mobile App Shell -->
+  <div class="mobile-app-shell">
 
-        <!-- Dynamic Welcome Back / Resume Banner (if an unfinished session exists) -->
-        <div class="resume-session-banner" id="entry-resume-banner">
-          <div class="resume-header">
+    <!-- =======================================================================
+         STEP 1: WHATSAPP NUMBER ENTRY
+         ======================================================================= -->
+    <section class="step-card active" id="step-phone">
+      <div class="card-inner">
+        <div class="hero-brand-badge">
+          <span class="badge-icon">🎙️</span>
+          <span>Biswas Tech Recording Studio</span>
+        </div>
+
+        <h1 class="main-title">Audio Recording Studio</h1>
+        <p class="subtitle">Enter your WhatsApp number to start your recording session.</p>
+
+        <!-- Unfinished Session Found Alert -->
+        <div class="resume-card" id="resume-card" style="display: none;">
+          <div class="resume-info">
             <span class="resume-title">🔄 Unfinished Session Found</span>
+            <p class="resume-desc" id="resume-desc">You have completed recordings waiting.</p>
           </div>
-          <p class="resume-stats" id="entry-resume-stats">You have 5 of 12 recordings saved.</p>
-          <div class="resume-actions">
-            <button class="btn-resume" id="btn-entry-resume">Resume Recording</button>
-            <button class="btn-ignore" id="btn-entry-new-anyway">Start Fresh</button>
+          <div class="resume-btn-group">
+            <button class="btn-primary-mobile" id="btn-resume-session">Resume Session</button>
+            <button class="btn-secondary-mobile" id="btn-ignore-resume">Start Fresh</button>
           </div>
         </div>
 
-        <form id="entry-phone-form" onsubmit="return false;">
-          <div class="form-group">
-            <label class="form-label" for="input-whatsapp-number">WhatsApp Number</label>
-            <div class="phone-input-wrap">
-              <span class="prefix-icon">📞</span>
+        <form id="form-phone-entry" onsubmit="return false;">
+          <div class="input-group">
+            <label for="input-phone">WhatsApp Number</label>
+            <div class="phone-input-wrapper">
+              <span class="input-icon">📱</span>
               <input 
                 type="tel" 
-                id="input-whatsapp-number" 
-                class="input-text" 
+                id="input-phone" 
                 placeholder="e.g. +91 96355 27675 or 9876543210" 
                 autocomplete="tel"
                 required
               >
             </div>
-            <p class="input-hint">International numbers with country codes are accepted.</p>
+            <p class="field-hint">Include country code if applicable.</p>
           </div>
 
-          <button type="submit" class="btn-primary-lg" id="btn-entry-continue">
-            <span>Continue to Recording Studio</span>
+          <button type="submit" class="btn-primary-mobile" id="btn-submit-phone">
+            <span>Continue</span>
             <span>→</span>
           </button>
         </form>
 
-        <div class="entry-privacy-note">
-          🔒 <strong>Privacy Notice:</strong> Your recordings and scripts are stored strictly in this browser's local database. Biswas Tech does not upload your audio or phone number to any external server.
+        <div class="privacy-notice">
+          🔒 <strong>100% Client-Side Privacy:</strong> Your voice recordings are stored only on your phone/browser. Audio is never uploaded to any external server until you download your ZIP dataset.
         </div>
       </div>
-    </div>
-  </main>
+    </section>
 
-  <!-- =========================================================================
-       VIEW 2: SCRIPT SUBMISSION PAGE
-       ========================================================================= -->
-  <main class="app-view" id="view-submission">
-    <div class="submission-view">
-      <div class="submission-card">
-        <div class="submission-header">
-          <h1>Add Your Recording Scripts</h1>
-          <p>Paste your scripts below. You can add one script or multiple scripts at once.</p>
-        </div>
+    <!-- =======================================================================
+         STEP 2: SCRIPT SUBMISSION
+         ======================================================================= -->
+    <section class="step-card" id="step-scripts">
+      <div class="card-inner">
+        <h2 class="section-title">Paste Your Scripts</h2>
+        <p class="subtitle">Paste one or multiple scripts. Each script starts with <code>*script_id*</code>.</p>
 
-        <!-- Format Helper Accordion -->
-        <details class="format-example-box">
-          <summary>ℹ️ Click to see recommended script format with script IDs</summary>
-          <div class="format-code">*hi_04724*
+        <details class="script-format-tip">
+          <summary>💡 Script Format Example</summary>
+          <div class="format-sample">*hi_04724*
 Umm, papa ke phone mein balance khatam hote hi sab band ho jaata hai.
 
 *hi_04769*
-Haan ji, auto recharge laga dijiye three hundred forty nine rupees wale plan ka.
-
-*hi_04773*
-Main hisaab laga kar baitha hoon, recharge teen sau ninyanave rupaye ka tha.</div>
-          <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #64748B;">
-            • Each script ID should be surrounded by asterisks (e.g. <code>*script_id*</code>).<br>
-            • All unicode languages (Hindi, Bengali, Assamese, Odia, English, etc.) are fully preserved.<br>
-            • If no ID is detected, automatic IDs (<code>SCRIPT_001</code>, <code>SCRIPT_002</code>...) will be provided.
+Haan ji, papa ke phone mein auto recharge laga dijiye.</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.4rem;">
+            Hindi, Bengali, English and all Unicode languages are fully supported.
           </p>
         </details>
 
-        <!-- Script Textarea -->
-        <textarea 
-          id="script-textarea" 
-          class="script-textarea" 
-          placeholder="Paste your scripts here... Example:&#10;&#10;*hi_04724*&#10;Your recording script text goes here...&#10;&#10;*hi_04769*&#10;Another script text..."
-        ></textarea>
+        <div class="input-group" style="margin-top: 1rem;">
+          <textarea 
+            id="input-scripts-text" 
+            class="scripts-textarea" 
+            placeholder="Paste your scripts here...&#10;&#10;*hi_04724*&#10;Your recording script text...&#10;&#10;*hi_04769*&#10;Second recording script..."
+          ></textarea>
+        </div>
 
-        <!-- Duplicate ID / Warning Alerts Container -->
-        <div class="submission-alerts" id="submission-alerts-box" style="display: none;"></div>
+        <!-- Script count badge / alerts -->
+        <div class="parsed-status-bar" id="parsed-status-bar">
+          <span class="count-pill" id="parsed-count-pill">0 Scripts Detected</span>
+          <span class="status-warning" id="parsed-warning" style="display: none;">Duplicate IDs found!</span>
+        </div>
 
-        <!-- Real-time Parsed Preview Section -->
-        <div class="preview-section" id="submission-preview-section">
-          <div class="preview-title-bar">
-            <h3 style="font-size: 1.1rem; font-weight: 700;">Detected Scripts Preview</h3>
-            <span class="preview-count-badge" id="preview-count-badge">0 Scripts</span>
+        <button class="btn-primary-mobile" id="btn-start-studio" disabled>
+          <span>Start Recording</span>
+          <span>🎙️</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         STEP 3: SIMPLE MOBILE RECORDING SCREEN
+         ======================================================================= -->
+    <section class="step-card" id="step-record">
+      <div class="card-inner recording-inner">
+
+        <!-- Top Progress Header -->
+        <div class="script-progress-bar-wrap">
+          <div class="progress-info-row">
+            <span class="script-number-label" id="current-script-num">Script 1 of 12</span>
+            <span class="script-id-badge" id="current-script-id">ID: hi_04724</span>
           </div>
-
-          <div class="preview-table-container">
-            <table class="preview-table">
-              <thead>
-                <tr>
-                  <th style="width: 140px;">Script ID</th>
-                  <th style="width: 110px;">Characters</th>
-                  <th style="width: 100px;">Status</th>
-                  <th>Script Content Preview</th>
-                </tr>
-              </thead>
-              <tbody id="preview-table-body">
-                <tr>
-                  <td colspan="4" style="text-align: center; color: #94A3B8; padding: 2rem;">
-                    Paste scripts above to see detected preview table.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="progress-track-mobile">
+            <div class="progress-fill-mobile" id="current-progress-fill" style="width: 8%;"></div>
           </div>
         </div>
 
-        <!-- Submission Actions -->
-        <div class="submission-actions">
-          <button class="btn-secondary" id="btn-submission-cancel">Cancel</button>
-          <button class="btn-primary-lg" style="width: auto;" id="btn-submission-start" disabled>
-            <span>Start Recording Session</span>
-            <span>🎙️</span>
+        <!-- Large, Clear Script Reader Card (Readable while speaking) -->
+        <div class="script-reading-box">
+          <div class="script-text-scroller" id="current-script-text">
+            Loading script text...
+          </div>
+          <button class="btn-copy-mini" id="btn-copy-script" title="Copy Script">
+            <span id="copy-icon">📋</span> <span id="copy-text">Copy</span>
           </button>
         </div>
-      </div>
-    </div>
-  </main>
 
-  <!-- =========================================================================
-       VIEW 3: MAIN RECORDING STUDIO DASHBOARD
-       ========================================================================= -->
-  <main class="app-view" id="view-studio">
-    <div class="studio-layout">
-      
-      <!-- LEFT SIDEBAR: Script List & Search -->
-      <aside class="studio-sidebar-left" id="studio-sidebar-left">
-        <div class="sidebar-header">
-          <span class="sidebar-title">Session Scripts</span>
-          <span class="preview-count-badge" id="sidebar-scripts-count">0 / 0</span>
+        <!-- Minimal Audio Indicator Bar -->
+        <div class="recording-state-box">
+          <div class="live-rec-status">
+            <span class="rec-pulsing-dot" id="rec-dot"></span>
+            <span id="rec-status-text">Ready to record</span>
+          </div>
+          <div class="live-timer" id="rec-timer">00:00</div>
         </div>
-        <div class="script-search-bar">
-          <input type="text" id="script-search-input" class="search-input" placeholder="Search by ID or text...">
-        </div>
-        <div class="script-list-scroll" id="studio-script-list">
-          <!-- Populated dynamically by app.js -->
-        </div>
-      </aside>
 
-      <!-- CENTER WORKSPACE: Active Script & Recording Pipeline -->
-      <section class="studio-center-workspace">
-        
-        <!-- Script Meta Header -->
-        <div class="script-meta-bar">
-          <span class="script-seq-tag" id="studio-script-seq">Script 1 of 1</span>
-          <span class="current-script-id-badge" id="studio-script-id">ID: ---</span>
-          <div class="script-meta-tools">
-            <button class="btn-tool" id="btn-font-smaller" title="Decrease font size">A-</button>
-            <button class="btn-tool" id="btn-font-larger" title="Increase font size">A+</button>
-            <button class="btn-tool" id="btn-copy-script" title="Copy script text to clipboard">
-              <span id="copy-icon">📋</span> <span id="copy-text">Copy Script</span>
+        <!-- Dynamic Live Volume VU Meter -->
+        <div class="vu-meter-wrap">
+          <div class="vu-meter-fill" id="vu-meter-bar"></div>
+        </div>
+
+        <!-- ===================================================================
+             SIMPLE MOBILE ACTION CONTROLS
+             =================================================================== -->
+        <div class="mobile-action-dock">
+          
+          <!-- State 1: Ready to Record -->
+          <div id="controls-ready" class="control-state">
+            <button class="btn-record-giant" id="btn-start-record">
+              <span class="mic-icon">🎙️</span>
+              <span>Start Recording</span>
             </button>
           </div>
-        </div>
 
-        <!-- Large Legible Script Reader Card -->
-        <div class="script-reader-card">
-          <div class="script-reader-content" id="studio-script-text">
-            Loading script...
-          </div>
-        </div>
-
-        <!-- Audio Visualizer & Level Meter -->
-        <div class="visualizer-card">
-          <div class="visualizer-top-bar">
-            <div class="recording-indicator" id="recording-live-indicator">
-              <span class="recording-pulse-dot"></span>
-              <span id="recording-state-label">Ready</span>
-            </div>
-            <div class="recording-timer" id="recording-timer-display">00:00:00</div>
-          </div>
-          <!-- Live Canvas Oscilloscope -->
-          <canvas class="waveform-canvas" id="waveform-canvas" height="60"></canvas>
-          <!-- Decibel / Volume VU Meter -->
-          <div class="volume-meter-track" title="Microphone Input Level">
-            <div class="volume-meter-bar" id="volume-meter-bar"></div>
-          </div>
-        </div>
-
-        <!-- Primary Recording Action Dock -->
-        <div class="recording-controls-card">
-          <div class="controls-button-group">
-            <!-- Start Recording Button -->
-            <button class="btn-record-main" id="btn-record-start">
-              <span>🎙️</span> Start Recording
+          <!-- State 2: Actively Recording -->
+          <div id="controls-recording" class="control-state" style="display: none;">
+            <button class="btn-stop-giant" id="btn-stop-record">
+              <span class="stop-icon">⏹️</span>
+              <span>Stop Recording</span>
             </button>
+          </div>
+
+          <!-- State 3: Recorded (Review / Re-record / Save & Next) -->
+          <div id="controls-recorded" class="control-state" style="display: none;">
             
-            <!-- Pause Recording Button -->
-            <button class="btn-record-pause" id="btn-record-pause" style="display: none;">
-              <span>⏸️</span> Pause
-            </button>
-
-            <!-- Resume Recording Button -->
-            <button class="btn-record-pause" id="btn-record-resume" style="display: none;">
-              <span>▶️</span> Resume
-            </button>
-
-            <!-- Stop Recording Button -->
-            <button class="btn-record-stop" id="btn-record-stop" style="display: none;">
-              <span>⏹️</span> Stop Recording
-            </button>
-          </div>
-
-          <!-- Custom Audio Player (Only visible after recording completed) -->
-          <div class="audio-player-card" id="studio-audio-player" style="display: none;">
-            <div class="player-main-controls">
-              <button class="btn-play-toggle" id="btn-playback-toggle" title="Play / Pause Recording">
-                ▶
+            <!-- Quick Audio Playback Row -->
+            <div class="player-row">
+              <button class="btn-mini-play" id="btn-mini-play">
+                <span id="mini-play-icon">▶</span>
               </button>
-              <div class="timeline-scrubber-wrap">
-                <input type="range" class="timeline-slider" id="playback-timeline" min="0" max="100" value="0" step="0.1">
-                <div class="time-display-bar">
-                  <span id="playback-current-time">00:00</span>
-                  <span id="playback-total-time">00:00</span>
+              <div class="player-time-track">
+                <input type="range" id="mini-audio-scrubber" min="0" max="100" value="0" class="mini-scrubber">
+                <div class="time-readout">
+                  <span id="mini-current-time">00:00</span>
+                  <span id="mini-duration-time">00:00</span>
                 </div>
               </div>
+              <button class="btn-rerecord-pill" id="btn-rerecord">
+                <span>🔄</span> Redo
+              </button>
             </div>
 
-            <div class="player-secondary-controls">
-              <div class="volume-control-wrap">
-                <span>🔊</span>
-                <input type="range" class="volume-slider" id="playback-volume" min="0" max="1" step="0.05" value="1">
-              </div>
+            <!-- Primary Action: Save & Next (or Save & Download ZIP on last script) -->
+            <button class="btn-save-next" id="btn-save-next">
+              <span id="save-next-text">Save & Next</span>
+              <span id="save-next-icon">→</span>
+            </button>
 
-              <div class="player-recording-actions">
-                <button class="btn-rerecord" id="btn-playback-rerecord">
-                  <span>🔄</span> Re-record
-                </button>
-                <button class="btn-delete-rec" id="btn-playback-delete">
-                  <span>🗑️</span> Delete
-                </button>
-              </div>
-            </div>
+          </div>
+
+          <!-- Previous Script link to go back if needed -->
+          <div class="navigation-subrow">
+            <button class="btn-nav-back" id="btn-prev-script" style="visibility: hidden;">
+              ← Previous Script
+            </button>
+            <span class="format-spec-tag">48kHz • 16-bit • WAV</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         STEP 4: ALL COMPLETED & ZIP DOWNLOAD SCREEN
+         ======================================================================= -->
+    <section class="step-card" id="step-complete">
+      <div class="card-inner complete-inner">
+        <div class="celebration-icon">🎉</div>
+        <h2 class="main-title">All Recordings Completed!</h2>
+        <p class="subtitle">Every script in this session has been recorded in high-quality 48kHz 16-bit PCM WAV.</p>
+
+        <!-- Summary Stats Card -->
+        <div class="summary-box">
+          <div class="summary-item">
+            <span class="summary-val" id="summary-total-scripts">12</span>
+            <span class="summary-label">Total Scripts</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-val" id="summary-total-duration">04:15</span>
+            <span class="summary-label">Total Audio</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-val" id="summary-total-size">24 MB</span>
+            <span class="summary-label">Est. File Size</span>
           </div>
         </div>
 
-        <!-- Bottom Script Navigation -->
-        <div class="bottom-nav-bar">
-          <button class="btn-script-nav" id="btn-nav-prev-script">
-            <span>←</span> Previous Script
-          </button>
-          <button class="btn-script-nav" id="btn-nav-next-script">
-            Next Script <span>→</span>
-          </button>
-        </div>
-
-      </section>
-
-      <!-- RIGHT SIDEBAR: Progress & Quick Export -->
-      <aside class="studio-sidebar-right">
-        <!-- Session Progress Card -->
-        <div class="panel-card">
-          <div class="panel-card-title">
-            <span>Session Progress</span>
-            <span id="sidebar-progress-percent">0%</span>
-          </div>
-          <div class="progress-big-number" id="sidebar-progress-ratio">0 / 0</div>
-          <div class="progress-track">
-            <div class="progress-fill" id="sidebar-progress-bar"></div>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-box">
-              <div class="stat-box-val" id="sidebar-stat-completed" style="color: var(--success);">0</div>
-              <div class="stat-box-label">Completed</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-box-val" id="sidebar-stat-remaining" style="color: var(--warning);">0</div>
-              <div class="stat-box-label">Remaining</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Audio Format Specifications Panel -->
-        <div class="panel-card">
-          <div class="panel-card-title">Audio Quality Specs</div>
-          <div class="audio-specs-list">
-            <div class="spec-row">
-              <span class="spec-label">Container</span>
-              <span class="spec-value">WAV (RIFF)</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Encoding</span>
-              <span class="spec-value">Linear PCM (16-bit)</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Sample Rate</span>
-              <span class="spec-value">48,000 Hz</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Channels</span>
-              <span class="spec-value">1 (Mono)</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Byte Rate</span>
-              <span class="spec-value">96,000 B/s</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Standard</span>
-              <span class="spec-value" style="color: var(--success);">AI Speech Ready</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- ZIP Export Action Card -->
-        <div class="panel-card">
-          <div class="panel-card-title">Download Dataset</div>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
-            Packages all completed WAV recordings along with <code>manifest.json</code> into a standard ZIP archive.
-          </p>
-          <button class="btn-export-zip" id="btn-studio-download-zip" disabled>
-            <span>📦</span> Generate ZIP & Download
-          </button>
-        </div>
-      </aside>
-
-    </div>
-  </main>
-
-  <!-- =========================================================================
-       VIEW 4: DASHBOARD & SESSIONS HISTORY
-       ========================================================================= -->
-  <main class="app-view" id="view-dashboard">
-    <div class="dashboard-view">
-      <div class="dashboard-hero">
-        <div class="hero-left">
-          <h1>Studio Dashboard</h1>
-          <p id="dashboard-hero-subtitle">Manage your recording sessions and downloaded datasets.</p>
-        </div>
-        <button class="btn-primary-lg" style="width: auto;" id="btn-dashboard-new-session">
-          <span>+</span> New Recording Session
+        <!-- Big Download ZIP Button -->
+        <button class="btn-download-zip-giant" id="btn-download-zip-final">
+          <span>📦</span>
+          <span>Download ZIP File</span>
         </button>
-      </div>
+        <p class="zip-note">Contains all individual WAV files and <code>manifest.json</code>.</p>
 
-      <div>
-        <h2 class="sessions-section-title">Your Recording Sessions</h2>
-        <div class="session-cards-grid" id="dashboard-sessions-list">
-          <!-- Populated dynamically by app.js -->
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- =========================================================================
-       VIEW 5: SETTINGS & STORAGE MANAGEMENT
-       ========================================================================= -->
-  <main class="app-view" id="view-settings">
-    <div class="settings-view">
-      
-      <!-- Company Branding & Pipeline Info -->
-      <div class="settings-card">
-        <h2 class="settings-card-title">Biswas Tech Studio Configuration</h2>
-        <p class="settings-card-desc">Personal audio recording and speech data collection for AI model training.</p>
-        
-        <div class="audio-specs-list" style="margin-top: 1rem;">
-          <div class="spec-row">
-            <span class="spec-label">Platform</span>
-            <span class="spec-value">Biswas Tech – Audio Recording Studio</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-label">Target Architecture</span>
-            <span class="spec-value">Client-Side Web Audio API + AudioWorklet</span>
-          </div>
-          <div class="spec-row">
-            <span class="spec-label">Audio Resampler</span>
-            <span class="spec-value">Real-time Linear Interpolation to 48 kHz</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Storage Info Card -->
-      <div class="settings-card">
-        <h2 class="settings-card-title">Browser Storage & IndexedDB</h2>
-        <p class="settings-card-desc">Track local space usage and persistence state in your browser.</p>
-
-        <div class="storage-meter-wrap">
-          <div class="storage-numbers">
-            <span>Storage Used: <strong id="settings-storage-used">0 MB</strong></span>
-            <span>Estimated Quota: <strong id="settings-storage-quota">0 MB</strong></span>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" id="settings-storage-bar" style="width: 2%;"></div>
-          </div>
-        </div>
-
-        <div class="stats-grid" style="margin-bottom: 1.25rem;">
-          <div class="stat-box">
-            <div class="stat-box-val" id="settings-sessions-count">0</div>
-            <div class="stat-box-label">Saved Sessions</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-box-val" id="settings-recordings-count">0</div>
-            <div class="stat-box-label">Saved WAV Files</div>
-          </div>
-        </div>
-
-        <div class="settings-actions-row">
-          <button class="btn-secondary" id="btn-settings-export-backup">
-            <span>💾</span> Export Backup Archive
+        <div class="complete-secondary-actions">
+          <button class="btn-secondary-mobile" id="btn-review-recordings">
+            Review Recordings
           </button>
-          <label class="btn-secondary" style="cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem;">
-            <span>📂</span> Import Backup Archive
-            <input type="file" id="settings-import-file-input" accept=".zip" style="display: none;">
-          </label>
+          <button class="btn-secondary-mobile" id="btn-new-batch">
+            + Start New Batch
+          </button>
         </div>
       </div>
+    </section>
 
-      <!-- Danger Zone -->
-      <div class="settings-card" style="border-color: #FECACA;">
-        <h2 class="settings-card-title" style="color: var(--danger);">Danger Zone</h2>
-        <p class="settings-card-desc">Permanently wipe all locally saved sessions, scripts, and audio recordings.</p>
-        <button class="btn-secondary" id="btn-settings-clear-all" style="color: var(--danger); border-color: #FCA5A5;">
-          <span>🗑️</span> Clear All Local Studio Data
-        </button>
+  </div>
+
+  <!-- ZIP Progress Overlay -->
+  <div class="modal-overlay" id="zip-overlay">
+    <div class="modal-box">
+      <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📦</div>
+      <h3 style="font-size: 1.15rem; font-weight: 700;">Creating ZIP Archive</h3>
+      <p id="zip-status-text" style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 1rem;">Packing 48kHz WAV recordings...</p>
+      <div class="progress-track-mobile">
+        <div class="progress-fill-mobile" id="zip-fill-bar" style="width: 0%;"></div>
       </div>
-
+      <span id="zip-percent-text" style="font-size: 0.82rem; font-weight: 700; color: var(--primary); margin-top: 0.4rem; display: block;">0%</span>
     </div>
-  </main>
+  </div>
 
-  <!-- =========================================================================
-       GENERIC CONFIRMATION / ACTION MODAL
-       ========================================================================= -->
-  <div class="modal-overlay" id="app-modal-overlay">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3 id="modal-title">Confirm Action</h3>
-        <button id="modal-close-x" style="font-size: 1.25rem; color: #94A3B8;">&times;</button>
-      </div>
-      <div class="modal-body" id="modal-body-content">
-        Are you sure?
-      </div>
-      <div class="modal-footer">
-        <button class="btn-secondary" id="modal-btn-cancel">Cancel</button>
-        <button class="btn-primary-sm" id="modal-btn-confirm">Confirm</button>
+  <!-- Accessible Dialog Modal -->
+  <div class="modal-overlay" id="dialog-overlay">
+    <div class="modal-box">
+      <h3 id="dialog-title" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">Confirm</h3>
+      <div id="dialog-message" style="font-size: 0.9rem; color: var(--text-body); margin-bottom: 1.25rem;">Are you sure?</div>
+      <div class="dialog-actions">
+        <button class="btn-secondary-mobile" id="dialog-btn-cancel">Cancel</button>
+        <button class="btn-primary-mobile" id="dialog-btn-confirm" style="width: auto;">Confirm</button>
       </div>
     </div>
   </div>
 
-  <!-- =========================================================================
-       ZIP GENERATION PROGRESS OVERLAY MODAL
-       ========================================================================= -->
-  <div class="modal-overlay" id="zip-progress-overlay">
-    <div class="modal-card" style="max-width: 440px; text-align: center;">
-      <div class="modal-body" style="padding: 2.25rem 1.75rem;">
-        <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📦</div>
-        <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--dark-navy); margin-bottom: 0.5rem;">Packaging Dataset ZIP</h3>
-        <p id="zip-progress-status" style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">Validating WAV files...</p>
-        
-        <div class="progress-track" style="height: 10px; margin-bottom: 0.75rem;">
-          <div class="progress-fill" id="zip-progress-fill" style="width: 0%;"></div>
-        </div>
-        <div id="zip-progress-percent" style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">0%</div>
-      </div>
-    </div>
-  </div>
+  <!-- Toast Notification -->
+  <div class="toast-mobile" id="toast-mobile"></div>
 
-  <!-- Toast Notifications Container -->
-  <div class="toast-container" id="toast-container"></div>
+  <!-- Hidden Audio element for playback -->
+  <audio id="mobile-audio" preload="auto" style="display: none;"></audio>
 
-  <!-- Audio element for playback -->
-  <audio id="playback-audio-element" preload="auto" style="display: none;"></audio>
-
-  <!-- External JSZip library with fallback -->
+  <!-- External JSZip with CDN fallback -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
-  <!-- Modular Application Scripts -->
+  <!-- Core Modules -->
   <script src="./wav-encoder.js"></script>
   <script src="./audio-recorder.js"></script>
   <script src="./database.js"></script>
   <script src="./zip-manager.js"></script>
   <script src="./app.js"></script>
+
 </body>
 </html>

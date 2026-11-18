@@ -723,7 +723,11 @@
         }
       );
 
-      window.ZipManager.constructor.downloadBlob(zipBlob, filename);
+      if (typeof window.ZipManager.downloadBlob === 'function') {
+        window.ZipManager.downloadBlob(zipBlob, filename);
+      } else if (typeof window.ZipManager.constructor.downloadBlob === 'function') {
+        window.ZipManager.constructor.downloadBlob(zipBlob, filename);
+      }
       state.currentSession.downloadStatus = true;
       await window.AudioStudioDB.saveSession(state.currentSession);
 
