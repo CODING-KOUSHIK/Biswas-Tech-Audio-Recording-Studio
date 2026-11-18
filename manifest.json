@@ -1,0 +1,18 @@
+{
+  "name": "Biswas Tech – Audio Recording Studio",
+  "short_name": "Biswas Audio",
+  "description": "Professional browser-based audio recording and data collection studio for AI speech training datasets.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0F172A",
+  "theme_color": "#2563EB",
+  "icons": [
+    {
+      "src": "./assets/favicon.svg",
+      "sizes": "64x64 128x128 256x256",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
+
